@@ -1,0 +1,36 @@
+version: '3.3'
+services:
+  wordpress:
+    # image: wordpress:5.4
+    build: .
+    restart: always
+    ports:
+      - '8080:80'
+    depends_on:
+      - mysql
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: demo
+      WORDPRESS_DB_PASSWORD: badidea
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - ./wp-plugins/windows-azure-storage:/var/www/html/wp-content/plugins/windows-azure-storage
+      - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+
+  mysql:
+    image: mysql:5.5
+    restart: always
+    expose:
+      - '3306'
+    environment:
+      MYSQL_USER: demo
+      MYSQL_PASSWORD: badidea
+      MYSQL_DATABASE: wordpress
+      MYSQL_ROOT_PASSWORD: reallybadidea
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  # wordpress: {}
+  db_data: {}
+
